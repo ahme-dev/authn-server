@@ -3,7 +3,6 @@ package handlers_test
 import (
 	"fmt"
 	"net/http"
-	"net/url"
 	"sort"
 	"testing"
 	"time"
@@ -67,9 +66,7 @@ func TestGetAccount(t *testing.T) {
 		oauthAccounts, err := app.AccountStore.GetOauthAccounts(account.ID)
 		require.NoError(t, err)
 
-		username := url.QueryEscape(account.Username)
-		fmt.Println(username)
-		res, err := client.Get(fmt.Sprintf("/accounts/%v", username))
+		res, err := client.Get(fmt.Sprintf("/accounts/%v", account.Username))
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, res.StatusCode)
 
