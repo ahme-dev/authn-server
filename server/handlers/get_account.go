@@ -14,19 +14,16 @@ func GetAccount(app *app.App) http.HandlerFunc {
 		var paramID *int
 		var paramUsername *string
 
-		id, err := strconv.Atoi(mux.Vars(r)["id"])
-		if err == nil {
-			paramID = &id
-		}
-
-		username := mux.Vars(r)["username"]
-		if username != "" {
-			paramUsername = &username
-		}
-
-		if paramID == nil && paramUsername == nil {
-			WriteNotFound(w, "account")
+		idOrUsername := mux.Vars(r)["id"]
+		if idOrUsername == "" {
 			return
+		}
+
+		id, err := strconv.Atoi(idOrUsername)
+		if err != nil {
+			paramUsername = &idOrUsername
+		} else {
+			paramID = &id
 		}
 
 		account, err := services.AccountGetter(app.AccountStore, services.AccountGetterParams{
@@ -35,7 +32,6 @@ func GetAccount(app *app.App) http.HandlerFunc {
 		})
 		if err != nil {
 			if _, ok := err.(services.FieldErrors); ok {
-				WriteNotFound(w, "account")
 				return
 			}
 
