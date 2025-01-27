@@ -3,6 +3,7 @@ package handlers_test
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"sort"
 	"testing"
 	"time"
@@ -47,6 +48,28 @@ func TestGetAccount(t *testing.T) {
 		require.NoError(t, err)
 
 		res, err := client.Get(fmt.Sprintf("/accounts/%v", account.ID))
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, res.StatusCode)
+
+		assertGetAccountResponse(t, res, account, oauthAccounts)
+	})
+
+	t.Run("valid account username", func(t *testing.T) {
+		account, err := app.AccountStore.Create("unlocked@test.com", []byte("bar"))
+		require.NoError(t, err)
+
+		err = app.AccountStore.AddOauthAccount(account.ID, "test", "ID1", "email", "TOKEN1")
+		require.NoError(t, err)
+
+		err = app.AccountStore.AddOauthAccount(account.ID, "trial", "ID2", "email", "TOKEN2")
+		require.NoError(t, err)
+
+		oauthAccounts, err := app.AccountStore.GetOauthAccounts(account.ID)
+		require.NoError(t, err)
+
+		username := url.QueryEscape(account.Username)
+		fmt.Println(username)
+		res, err := client.Get(fmt.Sprintf("/accounts/%v", username))
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, res.StatusCode)
 
