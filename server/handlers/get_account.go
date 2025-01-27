@@ -17,7 +17,9 @@ func GetAccount(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		account, err := services.AccountGetter(app.AccountStore, id)
+		account, err := services.AccountGetter(app.AccountStore, services.AccountGetterParams{
+			AccountID: &id,
+		})
 		if err != nil {
 			if _, ok := err.(services.FieldErrors); ok {
 				WriteNotFound(w, "account")
