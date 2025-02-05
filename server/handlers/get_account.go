@@ -32,6 +32,7 @@ func GetAccount(app *app.App) http.HandlerFunc {
 		})
 		if err != nil {
 			if _, ok := err.(services.FieldErrors); ok {
+				WriteNotFound(w, "account")
 				return
 			}
 
