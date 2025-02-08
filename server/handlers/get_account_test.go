@@ -54,13 +54,13 @@ func TestGetAccount(t *testing.T) {
 	})
 
 	t.Run("valid account username", func(t *testing.T) {
-		account, err := app.AccountStore.Create("unlocked@test.com", []byte("bar"))
+		account, err := app.AccountStore.Create("unlocked2@test.com", []byte("bar"))
 		require.NoError(t, err)
 
-		err = app.AccountStore.AddOauthAccount(account.ID, "test", "ID1", "email", "TOKEN1")
+		err = app.AccountStore.AddOauthAccount(account.ID, "test2", "ID21", "email21", "TOKEN21")
 		require.NoError(t, err)
 
-		err = app.AccountStore.AddOauthAccount(account.ID, "trial", "ID2", "email", "TOKEN2")
+		err = app.AccountStore.AddOauthAccount(account.ID, "trial2", "ID22", "email22", "TOKEN22")
 		require.NoError(t, err)
 
 		oauthAccounts, err := app.AccountStore.GetOauthAccounts(account.ID)
